@@ -1,0 +1,102 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: helm-template
+spec:
+  entrypoint: helm-entrypoint
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 10010
+  arguments:
+    parameters:
+      - name: releaseName
+      - name: chart
+      - name: namespace
+      - name: version
+      - name: url
+      - name: configMapName
+
+############# Workflow Definition #################
+  templates:
+  - name: helm-entrypoint
+    steps:
+    - - name: helm-create
+        template: helm
+        arguments:
+          parameters:
+          - name: releaseName
+            value: "{{workflow.parameters.releaseName}}"
+          - name: chart
+            value: "{{workflow.parameters.chart}}"
+          - name: namespace
+            value: "{{workflow.parameters.namespace}}"
+          - name: version
+            value: "{{workflow.parameters.version}}"
+          - name: url
+            value: "{{workflow.parameters.url}}"
+          - name: configMapName
+            value: "{{workflow.parameters.configMapName}}"
+  
+############# Workflow Step Template Definitions #################
+  - name: helm
+    inputs:
+      parameters:
+      - name: releaseName
+      - name: chart
+      - name: namespace
+      - name: version
+      - name: url
+      - name: repoName
+        value: repo
+      - name: configMapName
+    initContainers:
+    - name: registy-add
+      image: alpine/helm
+      env:
+      - name: HELM_CACHE_HOME
+        value: /tmp/.helm/cache
+      - name: HELM_CONFIG_HOME
+        value: /tmp/.helm/config
+      command: ["helm"]
+      args:
+       - "repo"
+       - "add"
+       - "{{inputs.parameters.repoName}}"
+       - "{{inputs.parameters.url}}"
+      mirrorVolumeMounts: true
+    container:
+      image: alpine/helm
+      env:
+      - name: HELM_CACHE_HOME
+        value: /tmp/.helm/cache
+      - name: HELM_CONFIG_HOME
+        value: /tmp/.helm/config
+      command: [ "helm" ]
+      args: 
+        - "upgrade"
+        - "--install"
+        - "{{inputs.parameters.releaseName}}"
+        - "{{inputs.parameters.repoName}}/{{inputs.parameters.chart}}"
+        - "--wait"
+        - "-n"
+        - "{{inputs.parameters.namespace}}"
+        - "--create-namespace=true"
+        - "--version"
+        - "{{inputs.parameters.version}}"
+        - "-f"
+        - "/tmp/yaml/chart-values.yaml"
+        - "--debug"
+        - "--timeout"
+        - "600s"
+      volumeMounts:
+      - name: cache
+        mountPath: /tmp/.helm
+      - name: config-yaml
+        mountPath: /tmp/yaml
+    volumes:
+    - name: cache
+      emptyDir: {}
+    - name: config-yaml
+      configMap:
+        name: "{{inputs.parameters.configMapName}}"

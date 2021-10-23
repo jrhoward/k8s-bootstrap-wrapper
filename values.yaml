@@ -1,0 +1,55 @@
+# Default values for k8s-bootstrap-wrapper.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+
+nameOverride: ""
+fullnameOverride: ""
+
+bootstrap-init:
+  enabled: false
+
+# See https://github.com/argoproj/argo-helm/blob/master/charts/argo-workflows/values.yaml
+argo-workflows:
+  enabled: false
+  controller:
+    containerRuntimeExecutor: pns
+
+argo-cd:
+  enabled: false
+  installCRDs: "false"
+  server:
+    replicas: 1
+    extraArgs:
+      - --insecure
+    ingress:
+      enabled: true
+      hosts:
+        - argocd.public.k8s.local
+      paths:
+        - /
+    config:
+      url: https://argocd.public.k8s.local
+      repositories: |
+        - type: helm
+          name: argo-platform
+          url: https://argoproj.github.io/argo-helm
+        - type: helm
+          name: bitnami
+          url: https://charts.bitnami.com/bitnami
+        - type: helm
+          name: prometheus-community
+          url: https://prometheus-community.github.io/helm-charts
+      users.anonymous.enabled: "true"
+      users.session.duration: "24h"
+      accounts.operator: login, apiKey
+      policy.default: role:readonly
+      policy.csv: |
+        p, user:operator, applications, get, */*, allow
+        p, user:operator, applications, sync, */*, allow
+        p, user:operator, projects, get, * , allow
+        p, user:operator, *, actions, * , allow
+
+global:
+  serviceAccount:
+    name: cluster-boot-strapper

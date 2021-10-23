@@ -1,0 +1,90 @@
+---
+# Example inline json for namespaces parameter
+#  [
+#   { "name": "test", "labels": {"iam": "working", "soami": "yes"},"annotations": { "my": "annotation"}},
+#   { "name": "test2", "labels": { "istio-injection": "enabled"}, "annotations": { "my": "annotation"}},
+#   { "name": "test3", "labels": { "istio-injection": "enabled"}, "annotations": {}} 
+#  ]
+
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: argocd-app-template
+spec:
+  entrypoint: argocd-app-entrypoint
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 10010
+  arguments:
+    parameters:
+      - name: namespaces
+        value: |
+          []
+      - name: echos
+        value: |
+          []
+    artifacts:
+      - name: chartValues
+        path: "/tmp/artifact/chart-values.yaml"
+        raw:
+          data: |
+
+############# Workflow Definition #################
+  templates:
+  - name: argo-app-entrypoint
+    steps:
+    - - name: create-namespace
+        template: namespace
+        arguments:
+          parameters:
+          - name: name
+            value: "{{item.name}}"
+          - name: labels
+            value: "{{item.labels}}"
+          - name: annotations
+            value: "{{item.annotations}}"
+        withParam: "{{workflow.parameters.namespaces}}"
+
+############# Workflow Step Definitions #################
+
+  - name: argocd-app
+    inputs:
+      parameters:
+      - name: argoProject
+      - name: argoNamespace
+      - name: argoLabels
+      - name: targetCluster
+      - name: targetNamespace
+      - name: helmRepoUrl
+      - name: helmChartName
+      - name: helmTargetRevision
+      - name: helmReleaseName
+      - name: helmValues
+    resource:
+      action: apply
+      # flags: [
+      #   "--validate=false"  # validation will be turned off
+      # ]
+      manifest: |
+        apiVersion: argoproj.io/v1alpha1
+        kind: Application
+        metadata:
+          name: {{inputs.parameters.helmReleaseName}}-{{inputs.parameters.helmChartName}}-{{inputs.parameters.argoProject}}
+          namespace: {{inputs.parameters.argoNamespace}}
+          labels:
+            {{inputs.parameters.argoLabels}}
+        spec:
+          destination:
+            server: {{inputs.parameters.targetCluster}}
+            namespace: {{inputs.parameters.targetNamespace}}
+          project: {{inputs.parameters.argoProject}}
+          source:
+            repoURL: {{inputs.parameters.helmRepoUrl}}
+            chart: {{inputs.parameters.helmChartName}}
+            targetRevision: {{inputs.parameters.helmTargetRevision}}
+            helm:
+              releaseName: {{inputs.parameters.helmReleaseName}}
+              values: |
+                {{inputs.parameters.helmValues}}
+          syncPolicy: {}
+          

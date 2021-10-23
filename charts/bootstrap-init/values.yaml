@@ -13,5 +13,15 @@ serviceAccount:
   annotations: {}
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
-  name: "admin-bootstrapper"
+  name: ""
 
+workflowTemplateAnnotations:
+  "helm.sh/hook-weight": "100"
+
+workflow:
+  argocdReleaseName: son-of-workflow
+  argocdChartName: "argo-cd"
+  argocdChartVersion: "~3.26.1"
+  argocdNamespace: "argo-cd"
+  argoChartsUrl: https://argoproj.github.io/argo-helm
+  argocdConfigMapName: argocd-chart-values

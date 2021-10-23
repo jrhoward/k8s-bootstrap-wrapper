@@ -10,6 +10,10 @@ apiVersion: argoproj.io/v1alpha1
 kind: WorkflowTemplate
 metadata:
   name: argocd-app-template
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "150"
+    #"helm.sh/hook-delete-policy": before-hook-creation
 spec:
   entrypoint: argocd-app-entrypoint
   securityContext:

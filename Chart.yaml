@@ -30,7 +30,7 @@ dependencies:
 - name: argo-cd
   version: ~3.26.0
   repository: https://argoproj.github.io/argo-helm
-  condition: argo-cd.enabled
+  condition: false #argo-cd.enabled
 - name: bootstrap-init
   version: "*"
   condition: bootstrap-init.enabled

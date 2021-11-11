@@ -1,11 +1,4 @@
 ---
-# Example inline json for namespaces parameter
-#  [
-#   { "name": "test", "labels": {"iam": "working", "soami": "yes"},"annotations": { "my": "annotation"}},
-#   { "name": "test2", "labels": { "istio-injection": "enabled"}, "annotations": { "my": "annotation"}},
-#   { "name": "test3", "labels": { "istio-injection": "enabled"}, "annotations": {}} 
-#  ]
-
 apiVersion: argoproj.io/v1alpha1
 kind: WorkflowTemplate
 metadata:
@@ -15,7 +8,7 @@ metadata:
     "helm.sh/hook-weight": "150"
     #"helm.sh/hook-delete-policy": before-hook-creation
 spec:
-  entrypoint: argocd-app-entrypoint
+  entrypoint: main
   securityContext:
     runAsNonRoot: true
     runAsUser: 10010
@@ -35,7 +28,7 @@ spec:
 
 ############# Workflow Definition #################
   templates:
-  - name: argo-app-entrypoint
+  - name: main
     steps:
     - - name: create-namespace
         template: namespace

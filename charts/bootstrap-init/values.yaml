@@ -15,9 +15,6 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name: ""
 
-workflowTemplateAnnotations:
-  "helm.sh/hook-weight": "100"
-
 workflow:
   argocdReleaseName: son-of-workflow
   argocdChartName: "argo-cd"
@@ -25,3 +22,38 @@ workflow:
   argocdNamespace: "argo-cd"
   argoChartsUrl: https://argoproj.github.io/argo-helm
   argocdConfigMapName: argocd-chart-values
+  namespaces:
+  - name: test
+    labels:
+      iam: working
+      soami: "yes"
+    annotations:
+      my: annotation
+  - name: test2
+    labels:
+      istio-injection: enabled
+    annotations:
+      my: annotation
+  - name: test3
+    labels:
+      istio-injection: enabled
+    annotations: {}
+  - name: test4
+    labels:
+      istio-injection: enabled
+    annotations:
+      name: "random"
+  - name: test5
+    labels:
+      istio-injection: enabled
+    annotations:
+      name: "random"
+  secrets:
+    name: mysecret
+    key: secret.properties
+    namespaces:
+      - test
+      - test2
+      - test3
+      - test4
+      - test5

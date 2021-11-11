@@ -27,10 +27,6 @@ dependencies:
   version: ~0.8.0
   repository: https://argoproj.github.io/argo-helm
   condition: argo-workflows.enabled
-- name: argo-cd
-  version: ~3.26.0
-  repository: https://argoproj.github.io/argo-helm
-  condition: false #argo-cd.enabled
 - name: bootstrap-init
   version: "*"
   condition: bootstrap-init.enabled

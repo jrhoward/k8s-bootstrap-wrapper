@@ -12,43 +12,37 @@ bootstrap-init:
 # See https://github.com/argoproj/argo-helm/blob/master/charts/argo-workflows/values.yaml
 argo-workflows:
   enabled: false
+  singleNamespace: false
+  # useDefaultArtifactRepo: true
+  # artifactRepository:
+  #   archiveLogs: true
+  #   s3:
+  #     accessKeySecret:
+  #       key: accesskey
+  #       name: minio
+  #     secretKeySecret:
+  #       key: secretkey
+  #       name: minio
+  #     bucket: argo-workflows
+  #     endpoint: cluster-minio.minio.svc:9000
+  #     insecure: true
   controller:
     containerRuntimeExecutor: pns
-
-argo-cd:
-  enabled: false
-  installCRDs: "false"
   server:
-    replicas: 1
     extraArgs:
-      - --insecure
+      - --auth-mode=server
     ingress:
       enabled: true
+      annotations:
+        - ingress.kubernetes.io/protocol: http
+      # labels: {}
+      # ingressClassName: ""
       hosts:
-        - argocd.public.k8s.local
-      paths:
-        - /
-    config:
-      url: https://argocd.public.k8s.local
-      repositories: |
-        - type: helm
-          name: argo-platform
-          url: https://argoproj.github.io/argo-helm
-        - type: helm
-          name: bitnami
-          url: https://charts.bitnami.com/bitnami
-        - type: helm
-          name: prometheus-community
-          url: https://prometheus-community.github.io/helm-charts
-      users.anonymous.enabled: "true"
-      users.session.duration: "24h"
-      accounts.operator: login, apiKey
-      policy.default: role:readonly
-      policy.csv: |
-        p, user:operator, applications, get, */*, allow
-        p, user:operator, applications, sync, */*, allow
-        p, user:operator, projects, get, * , allow
-        p, user:operator, *, actions, * , allow
+        - argoworkflow.public.k8s.local
+  workflow:
+    serviceAccount:
+      annotations:
+        eks.amazonaws.com/role-arn: "arn:aws:iam::054273887971:role/baas-argo-workflow-service-account"
 
 global:
   serviceAccount:

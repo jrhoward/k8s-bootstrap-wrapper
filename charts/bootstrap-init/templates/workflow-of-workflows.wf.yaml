@@ -1,0 +1,48 @@
+# This template demonstrates a workflow of workflows.
+# Workflow triggers one or more workflow and manage it.
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  name: workflow-of-workflows
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    #"helm.sh/hook-delete-policy": before-hook-creation
+    "helm.sh/hook-weight": "200"
+spec:
+  entrypoint: main
+  serviceAccountName: "{{ .Values.global.serviceAccount.name }}"
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 10010
+  arguments:
+    parameters:
+      - name: releaseName
+        value: "{{ .Values.workflow.argocdReleaseName }}"
+      - name: chart
+        value: "{{ .Values.workflow.argocdChartName }}"
+      - name: namespace
+        value: "{{ .Values.workflow.argocdNamespace }}"
+      - name: version
+        value: "{{ .Values.workflow.argocdChartVersion }}"
+      - name: url
+        value: "{{.Values.workflow.argoChartsUrl }}"
+      - name: configMapName
+        value: "{{ .Values.workflow.argocdConfigMapName }}"
+      - name: namespaces
+        value: |
+          {{- .Values.workflow.namespaces | toJson | nindent  10 }}
+  templates:
+    - name: main
+      steps:
+      - - name: namespace-setup
+          templateRef: 
+            name: "namespace-template"
+            template: "main"
+      - - name: secret-setup
+          templateRef: 
+            name: "secret-template"
+            template: "main"
+      - - name: deploy-argo
+          templateRef: 
+            name: helm-template
+            template: main

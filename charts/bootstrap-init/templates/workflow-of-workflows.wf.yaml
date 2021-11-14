@@ -57,3 +57,32 @@ spec:
               - name: configMapName
                 value: "{{ printf "{{item.configMapName}}" }}"
           withParam: "{{ printf "{{workflow.parameters.helm}}" }}"
+      - - name: deploy-app
+          templateRef: 
+            name: argocd-app-template
+            template: main
+          arguments:
+            parameters:
+              - name: argoProject
+                value: "default"
+              - name: argoNamespace
+                value: "argo-cd"
+              - name: argoLabels
+                value: |
+                  {}
+              - name: targetCluster
+                value: "https://kubernetes.default.svc"
+              - name: targetNamespace
+                value: "{{ printf "{{item.namespace}}" }}"
+              - name: helmReleaseName
+                value: "{{ printf "{{item.releaseName}}" }}"
+              - name: helmChartName
+                value: "{{ printf "{{item.chartName }}" }}"
+              - name: helmTargetRevision
+                value: "{{ printf "{{item.chartVersion}}" }}"
+              - name: helmRepoUrl
+                value: "{{ printf "{{item.chartsUrl}}" }}"
+              - name: helmValues
+                value: |
+                  {{- .Files.Get "files/argocd-chart-values.yaml" | fromYaml | toJson | nindent 18 }}                    
+          withParam: "{{ printf "{{workflow.parameters.helm}}" }}"

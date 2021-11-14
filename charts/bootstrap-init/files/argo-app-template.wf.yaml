@@ -12,39 +12,9 @@ spec:
   securityContext:
     runAsNonRoot: true
     runAsUser: 10010
-  arguments:
-    parameters:
-      - name: namespaces
-        value: |
-          []
-      - name: echos
-        value: |
-          []
-    artifacts:
-      - name: chartValues
-        path: "/tmp/artifact/chart-values.yaml"
-        raw:
-          data: |
-
 ############# Workflow Definition #################
   templates:
   - name: main
-    steps:
-    - - name: create-namespace
-        template: namespace
-        arguments:
-          parameters:
-          - name: name
-            value: "{{item.name}}"
-          - name: labels
-            value: "{{item.labels}}"
-          - name: annotations
-            value: "{{item.annotations}}"
-        withParam: "{{workflow.parameters.namespaces}}"
-
-############# Workflow Step Definitions #################
-
-  - name: argocd-app
     inputs:
       parameters:
       - name: argoProject
@@ -59,9 +29,6 @@ spec:
       - name: helmValues
     resource:
       action: apply
-      # flags: [
-      #   "--validate=false"  # validation will be turned off
-      # ]
       manifest: |
         apiVersion: argoproj.io/v1alpha1
         kind: Application

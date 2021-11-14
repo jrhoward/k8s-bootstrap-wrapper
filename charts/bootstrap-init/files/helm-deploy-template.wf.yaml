@@ -19,17 +19,11 @@ spec:
     inputs:
       parameters:
       - name: releaseName
-        value: "{{inputs.parameters.releaseName}}"
       - name: chart
-        value: "{{inputs.parameters.chart}}"
       - name: namespace
-        value: "{{inputs.parameters.namespace}}"
       - name: version
-        value: "{{inputs.parameters.version}}"
       - name: url
-        value: "{{inputs.parameters.url}}"
       - name: configMapName
-        value: "{{inputs.parameters.configMapName}}"
       - name: repoName
         value: repo
     initContainers:

@@ -19,11 +19,8 @@ spec:
     inputs:
       parameters:
       - name: name
-        value: "{{inputs.parameters.name}}"
       - name: labels
-        value: "{{inputs.parameters.labels}}"
       - name: annotations
-        value: "{{inputs.parameters.annotations}}"
     resource:
       action: apply
       manifest: |

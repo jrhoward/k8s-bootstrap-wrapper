@@ -1,0 +1,13 @@
+{{- range .Values.workflow.helm }}
+{{- $fileName := printf "files/%s.yaml" .configMapName }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .configMapName }}
+  labels:
+    part-of: {{ .configMapName }}
+data:
+  chart-values.yaml: |
+{{ $.Files.Get $fileName | indent 4 }}
+{{- end }}   
+  

@@ -12,38 +12,10 @@ spec:
   securityContext:
     runAsNonRoot: true
     runAsUser: 10010
-  arguments:
-    parameters:
-      - name: releaseName
-      - name: chart
-      - name: namespace
-      - name: version
-      - name: url
-      - name: configMapName
 
-############# Workflow Definition #################
+############# inputs Definition #################
   templates:
   - name: main
-    steps:
-    - - name: helm-create
-        template: helm
-        arguments:
-          parameters:
-          - name: releaseName
-            value: "{{workflow.parameters.releaseName}}"
-          - name: chart
-            value: "{{workflow.parameters.chart}}"
-          - name: namespace
-            value: "{{workflow.parameters.namespace}}"
-          - name: version
-            value: "{{workflow.parameters.version}}"
-          - name: url
-            value: "{{workflow.parameters.url}}"
-          - name: configMapName
-            value: "{{workflow.parameters.configMapName}}"
-  
-############# Workflow Step Template Definitions #################
-  - name: helm
     inputs:
       parameters:
       - name: releaseName
@@ -51,9 +23,9 @@ spec:
       - name: namespace
       - name: version
       - name: url
+      - name: configMapName
       - name: repoName
         value: repo
-      - name: configMapName
     initContainers:
     - name: registy-add
       image: alpine/helm

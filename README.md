@@ -27,3 +27,31 @@ helm delete  multi-card  -n argo-workflows
 helm delete  son-of-workflow  -n argo-cd
 
 ```
+
+
+```
+
+      # - - name: secret-setup
+      #     templateRef: 
+      #       name: "secret-template"
+      #       template: "main"
+      #     arguments:
+      #       parameters:
+      #       - name: secret
+      #         value:  |
+      #           {{- .Values.workflow.secrets | toJson | nindent  16 }}
+
+```
+
+```
+      - - name: namespace-setup
+          templateRef: 
+            name: "namespace-template"
+            template: "main"
+          arguments:
+            parameters:
+            - name: namespaces
+              value: |
+                {{- .Values.workflow.namespaces | toJson | nindent  16 }}
+
+```

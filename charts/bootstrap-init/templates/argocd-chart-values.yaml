@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Values.workflow.argocdConfigMapName }}
+  name: {{ get ( index .Values.workflow.helm 0 ) "configMapName" }}
   labels:
     {{- include "bootstrap-init.labels" . | nindent 4 }}
 data:

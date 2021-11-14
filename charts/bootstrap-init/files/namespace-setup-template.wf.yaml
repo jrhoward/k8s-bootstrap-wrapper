@@ -12,36 +12,18 @@ spec:
   securityContext:
     runAsNonRoot: true
     runAsUser: 10010
-  arguments:
-    parameters:
-      - name: namespaces
-        value: |
-          []
 
 ############# Workflow Definition #################
   templates:
   - name: main
-    steps:
-    - - name: create-namespace
-        template: namespace
-        arguments:
-          parameters:
-          - name: name
-            value: "{{item.name}}"
-          - name: labels
-            value: "{{item.labels}}"
-          - name: annotations
-            value: "{{item.annotations}}"
-        withParam: "{{workflow.parameters.namespaces}}"
-
-############# Workflow Step Definitions #################
-
-  - name: namespace
     inputs:
       parameters:
       - name: name
+        value: "{{inputs.parameters.name}}"
       - name: labels
+        value: "{{inputs.parameters.labels}}"
       - name: annotations
+        value: "{{inputs.parameters.annotations}}"
     resource:
       action: apply
       manifest: |

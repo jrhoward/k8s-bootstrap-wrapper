@@ -16,12 +16,13 @@ serviceAccount:
   name: ""
 
 workflow:
-  argocdReleaseName: son-of-workflow
-  argocdChartName: "argo-cd"
-  argocdChartVersion: "~3.26.1"
-  argocdNamespace: "argo-cd"
-  argoChartsUrl: https://argoproj.github.io/argo-helm
-  argocdConfigMapName: argocd-chart-values
+  helm:
+  - chartName: "argo-cd"
+    releaseName: son-of-workflow
+    chartVersion: "~3.26.1"
+    namespace: "argo-cd"
+    chartsUrl: https://argoproj.github.io/argo-helm
+    configMapName: argocd-chart-values
   namespaces:
   - name: test
     labels:
@@ -48,12 +49,3 @@ workflow:
       istio-injection: enabled
     annotations:
       name: "random"
-  secrets:
-    name: mysecret
-    key: secret.properties
-    namespaces:
-      - test
-      - test2
-      - test3
-      - test4
-      - test5

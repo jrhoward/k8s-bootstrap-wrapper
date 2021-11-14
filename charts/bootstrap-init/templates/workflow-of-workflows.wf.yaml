@@ -16,21 +16,12 @@ spec:
     runAsUser: 10010
   arguments:
     parameters:
-      - name: releaseName
-        value: "{{ .Values.workflow.argocdReleaseName }}"
-      - name: chart
-        value: "{{ .Values.workflow.argocdChartName }}"
-      - name: namespace
-        value: "{{ .Values.workflow.argocdNamespace }}"
-      - name: version
-        value: "{{ .Values.workflow.argocdChartVersion }}"
-      - name: url
-        value: "{{.Values.workflow.argoChartsUrl }}"
-      - name: configMapName
-        value: "{{ .Values.workflow.argocdConfigMapName }}"
-      - name: namespaces
-        value: |
-          {{- .Values.workflow.namespaces | toJson | nindent  10 }}
+    - name: namespaces
+      value: |
+        {{- .Values.workflow.namespaces | toJson | nindent  8 }}
+    - name: helm
+      value: |
+        {{- .Values.workflow.helm | toJson | nindent  8 }}      
   templates:
     - name: main
       steps:
@@ -38,11 +29,31 @@ spec:
           templateRef: 
             name: "namespace-template"
             template: "main"
-      - - name: secret-setup
-          templateRef: 
-            name: "secret-template"
-            template: "main"
-      - - name: deploy-argo
+          arguments:
+            parameters:
+            - name: name
+              value: "{{ printf "{{item.name}}" }}"
+            - name: annotations
+              value: "{{ printf "{{item.annotations}}" }}"
+            - name: labels
+              value: "{{ printf "{{item.labels}}" }}"
+          withParam: "{{ printf "{{workflow.parameters.namespaces}}" }}"
+      - - name: deploy-charts
           templateRef: 
             name: helm-template
             template: main
+          arguments:
+            parameters:
+              - name: releaseName
+                value: "{{ printf "{{item.releaseName}}" }}"
+              - name: chart
+                value: "{{ printf "{{item.chartName }}" }}"
+              - name: namespace
+                value: "{{ printf "{{item.namespace}}" }}"
+              - name: version
+                value: "{{ printf "{{item.chartVersion}}" }}"
+              - name: url
+                value: "{{ printf "{{item.chartsUrl}}" }}"
+              - name: configMapName
+                value: "{{ printf "{{item.configMapName}}" }}"
+          withParam: "{{ printf "{{workflow.parameters.helm}}" }}"

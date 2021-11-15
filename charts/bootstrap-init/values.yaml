@@ -17,7 +17,7 @@ serviceAccount:
 
 workflow:
   helm:
-  - chartName: "argo-cd"
+    chartName: "argo-cd"
     releaseName: son-of-workflow
     chartVersion: "~3.26.1"
     namespace: "argo-cd"

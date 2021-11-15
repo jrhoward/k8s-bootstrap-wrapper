@@ -1,12 +1,9 @@
 dependencies:
 - name: argo-workflows
   repository: https://argoproj.github.io/argo-helm
-  version: 0.8.0
-- name: argo-cd
-  repository: https://argoproj.github.io/argo-helm
-  version: 3.26.3
+  version: 0.8.1
 - name: bootstrap-init
   repository: ""
   version: '*'
-digest: sha256:6a5afd460d139bf375f3c3f64916db88d13bf40a92e62accc3aa8d098fb5eb1e
-generated: "2021-10-23T10:36:46.066401569+11:00"
+digest: sha256:c162f930091b2ef1fc01d4c6bb03b0c314f9a4721df95096a61ac76809460d7f
+generated: "2021-11-15T12:58:10.519686+11:00"

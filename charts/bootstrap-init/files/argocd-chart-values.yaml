@@ -27,7 +27,7 @@ server:
     users.session.duration: "24h"
     accounts.operator: login, apiKey
     policy.default: role:readonly
-    policy.csv: |
+    policy.csv: |-
       p, user:operator, applications, get, */*, allow
       p, user:operator, applications, sync, */*, allow
       p, user:operator, projects, get, * , allow

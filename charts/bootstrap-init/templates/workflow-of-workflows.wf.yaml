@@ -21,7 +21,7 @@ spec:
         {{- .Values.workflow.namespaces | toJson | nindent  8 }}
     - name: helm
       value: |
-        {{- .Values.workflow.helm | toJson | nindent  8 }}      
+        [ {{- .Values.workflow.helm | toJson | nindent  8 }} ]
   templates:
     - name: main
       steps:
@@ -45,17 +45,18 @@ spec:
           arguments:
             parameters:
               - name: releaseName
-                value: "{{ printf "{{workflow.parameters.helm.releaseName}}" }}"
+                value: "{{ printf "{{item.releaseName}}" }}"
               - name: chart
-                value: "{{ printf "{{workflow.parameters.helm.chartName }}" }}"
+                value: "{{ printf "{{item.chartName }}" }}"
               - name: namespace
-                value: "{{ printf "{{workflow.parameters.helm.namespace}}" }}"
+                value: "{{ printf "{{item.namespace}}" }}"
               - name: version
-                value: "{{ printf "{{workflow.parameters.helm.chartVersion}}" }}"
+                value: "{{ printf "{{item.chartVersion}}" }}"
               - name: url
-                value: "{{ printf "{{workflow.parameters.helm.chartsUrl}}" }}"
+                value: "{{ printf "{{item.chartsUrl}}" }}"
               - name: configMapName
-                value: "{{ printf "{{workflow.parameters.helm.configMapName}}" }}"
+                value: "{{ printf "{{item.configMapName}}" }}"
+          withParam: "{{ printf "{{workflow.parameters.helm}}" }}"
       - - name: deploy-argocd-app
           templateRef: 
             name: argocd-app-template
@@ -72,16 +73,17 @@ spec:
               - name: targetCluster
                 value: "https://kubernetes.default.svc"
               - name: targetNamespace
-                value: "{{ printf "{{workflow.parameters.helm.namespace}}" }}"
+                value: "{{ printf "{{item.namespace}}" }}"
               - name: helmReleaseName
-                value: "{{ printf "{{workflow.parameters.helm.releaseName}}" }}"
+                value: "{{ printf "{{item.releaseName}}" }}"
               - name: helmChartName
-                value: "{{ printf "{{workflow.parameters.helm.chartName }}" }}"
+                value: "{{ printf "{{item.chartName }}" }}"
               - name: helmTargetRevision
-                value: "{{ printf "{{workflow.parameters.helm.chartVersion}}" }}"
+                value: "{{ printf "{{item.chartVersion}}" }}"
               - name: helmRepoUrl
-                value: "{{ printf "{{workflow.parameters.helm.chartsUrl}}" }}"
+                value: "{{ printf "{{item.chartsUrl}}" }}"
                 {{- $fileName := printf "files/%s.yaml" .Values.workflow.helm.configMapName }}
               - name: helmValues
                 value: |
                   {{- .Files.Get $fileName | fromYaml | toJson | nindent 18 }}
+          withParam: "{{ printf "{{workflow.parameters.helm}}" }}"

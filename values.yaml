@@ -16,35 +16,20 @@ serviceAccount:
   name: ""
 
 # See https://github.com/argoproj/argo-helm/blob/master/charts/argo-workflows/values.yaml
-argo-workflows:
+argoworkflows:
   enabled: false
+  nameOverride: "argoworkflows"
   singleNamespace: false
-  # useDefaultArtifactRepo: true
-  # artifactRepository:
-  #   archiveLogs: true
-  #   s3:
-  #     accessKeySecret:
-  #       key: accesskey
-  #       name: minio
-  #     secretKeySecret:
-  #       key: secretkey
-  #       name: minio
-  #     bucket: argo-workflows
-  #     endpoint: cluster-minio.minio.svc:9000
-  #     insecure: true
   controller:
     containerRuntimeExecutor: pns
   server:
-    extraArgs:
-      - --auth-mode=server
+    extraArgs: [ "--auth-mode=server" ]
     ingress:
       enabled: true
       annotations:
-        - ingress.kubernetes.io/protocol: http
-      # labels: {}
-      # ingressClassName: ""
+        [ ingress.kubernetes.io/protocol: http ]
       hosts:
-        - argoworkflow.public.k8s.local
+        [ "argoworkflow.public.k8s.local" ]
   workflow:
     serviceAccount:
       annotations:

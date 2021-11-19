@@ -61,3 +61,14 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "k8s-bootstrap-wrapper.argoworkflowsHelm" -}}
+chartName: "argo-workflows"
+releaseName: multi-card
+chartVersion: "~0.8.0"
+namespace: "argo-workflows"
+chartsUrl: https://argoproj.github.io/argo-helm
+{{- end }}

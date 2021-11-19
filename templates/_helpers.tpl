@@ -55,7 +55,8 @@ Create the name of the service account to use
 */}}
 {{- define "k8s-bootstrap-wrapper.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "k8s-bootstrap-wrapper.fullname" .) .Values.serviceAccount.name }}
+{{- $clusterBootStrapper :=  default .Values.serviceAccount.name .Values.global.serviceAccount.name -}}
+{{- default (include "k8s-bootstrap-wrapper.fullname" .) $clusterBootStrapper }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}

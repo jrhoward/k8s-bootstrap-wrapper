@@ -22,6 +22,18 @@ argoworkflows:
   singleNamespace: false
   controller:
     containerRuntimeExecutor: pns
+  artifactRepository:
+    archiveLogs: true
+    s3:
+      accessKeySecret:
+        key: accesskey
+        name: argo-artifacts
+      secretKeySecret:
+        key: secretkey
+        name: argo-artifacts
+      bucket: argo-artifacts
+      endpoint: argo-artifacts.getNS?????:9000
+      insecure: true
   server:
     extraArgs: [ "--auth-mode=server" ]
     ingress:
@@ -30,10 +42,16 @@ argoworkflows:
         [ ingress.kubernetes.io/protocol: http ]
       hosts:
         [ "argoworkflow.public.k8s.local" ]
-  workflow:
-    serviceAccount:
-      annotations:
-        eks.amazonaws.com/role-arn: "arn:aws:iam::054273887971:role/baas-argo-workflow-service-account"
+  # workflow:
+  #   serviceAccount:
+  #     annotations:
+  #       eks.amazonaws.com/role-arn: "arn:aws:iam::054273887971:role/baas-argo-workflow-service-account"
+
+minio:
+  enabled: true
+  fullnameOverride: argo-artifacts
+  buckets:
+    - name: argo-artifacts
 
 workflow:
   helm:

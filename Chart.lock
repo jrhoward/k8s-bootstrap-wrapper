@@ -1,9 +1,9 @@
 dependencies:
 - name: argo-workflows
   repository: https://argoproj.github.io/argo-helm
-  version: 0.8.1
-- name: bootstrap-init
-  repository: ""
-  version: '*'
-digest: sha256:c162f930091b2ef1fc01d4c6bb03b0c314f9a4721df95096a61ac76809460d7f
-generated: "2021-11-15T12:58:10.519686+11:00"
+  version: 0.8.3
+- name: minio
+  repository: https://helm.min.io
+  version: 8.0.10
+digest: sha256:c24cee2dfb35453a8259c6dd1377580c40b59c583d737bcd413804ecce0dbbc4
+generated: "2021-12-10T19:09:41.945743+11:00"

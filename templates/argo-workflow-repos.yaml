@@ -9,10 +9,10 @@ data:
     s3:
       accessKeySecret:
         key: accesskey
-        name: minio
+        name: argo-artifacts
       secretKeySecret:
-        key: argo-artifacts
+        key: secretkey
         name: argo-artifacts
       bucket: argo-artifacts
-      endpoint: argo-artifacts.{{.Release.Namespace}}.svc:9000
+      endpoint: argo-artifacts.{{.Release.Namespace}}.svc.cluster.local:9000
       insecure: true

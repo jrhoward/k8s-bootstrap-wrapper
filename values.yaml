@@ -17,7 +17,7 @@ serviceAccount:
 
 # See https://github.com/argoproj/argo-helm/blob/master/charts/argo-workflows/values.yaml
 argoworkflows:
-  enabled: false
+  enabled: true
   nameOverride: "argoworkflows"
   singleNamespace: false
   controller:
@@ -32,14 +32,14 @@ argoworkflows:
         key: secretkey
         name: argo-artifacts
       bucket: argo-artifacts
-      endpoint: argo-artifacts.getNS?????:9000
+      endpoint: argo-artifacts:9000
       insecure: true
   server:
     extraArgs: [ "--auth-mode=server" ]
     ingress:
       enabled: true
-      annotations:
-        [ ingress.kubernetes.io/protocol: http ]
+      annotations: {}
+      #  [ ingress.kubernetes.io/protocol: http ]
       hosts:
         [ "argoworkflow.public.k8s.local" ]
   # workflow:
@@ -52,6 +52,15 @@ minio:
   fullnameOverride: argo-artifacts
   buckets:
     - name: argo-artifacts
+      purge: true
+      policy: none
+  ingress:
+    enabled: true
+    # ingressClassName: ""
+    labels: {}
+    annotations: {}
+    #  ingress.kubernetes.io/protocol: http 
+    path: /
 
 workflow:
   helm:

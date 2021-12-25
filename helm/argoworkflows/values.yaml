@@ -1,20 +1,6 @@
-# Default values for k8s-bootstrap-wrapper.
+# Default values for argoworkflows.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-
-
-nameOverride: ""
-fullnameOverride: ""
-
-serviceAccount:
-  # Specifies whether a service account should be created
-  create: true
-  # Annotations to add to the service account
-  annotations: {}
-  # The name of the service account to use.
-  # If not set 
-  name: ""
-
 # See https://github.com/argoproj/argo-helm/blob/master/charts/argo-workflows/values.yaml
 argoworkflows:
   enabled: true
@@ -61,42 +47,3 @@ minio:
     annotations: {}
     #  ingress.kubernetes.io/protocol: http 
     path: /
-
-workflow:
-  helm:
-    chartName: "argo-cd"
-    releaseName: son-of-workflow
-    chartVersion: "~3.26.1"
-    namespace: "argo-cd"
-    chartsUrl: https://argoproj.github.io/argo-helm
-    configMapName: argocd-chart-values
-  namespaces:
-  - name: test
-    labels:
-      iam: working
-      soami: "yes"
-    annotations:
-      my: annotation
-  - name: test2
-    labels:
-      istio-injection: enabled
-    annotations:
-      my: annotation
-  - name: test3
-    labels:
-      istio-injection: enabled
-    annotations: {}
-  - name: test4
-    labels:
-      istio-injection: enabled
-    annotations:
-      name: "random"
-  - name: test5
-    labels:
-      istio-injection: enabled
-    annotations:
-      name: "random"
-
-global:
-  serviceAccount:
-    name: cluster-boot-strapper
